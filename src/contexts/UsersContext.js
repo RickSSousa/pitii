@@ -31,8 +31,29 @@ export const UsersProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (id, updatedUser) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/users/${id}`,
+        updatedUser
+      );
+      setUsers(users.map((user) => (user.id === id ? response.data : user)));
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+
+  const deleteUser = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      setUsers(users.filter((user) => user.id !== id));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
   return (
-    <UsersContext.Provider value={{ users, addUser }}>
+    <UsersContext.Provider value={{ users, addUser, updateUser, deleteUser }}>
       {children}
     </UsersContext.Provider>
   );
