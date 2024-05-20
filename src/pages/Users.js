@@ -1,5 +1,27 @@
 import React, { useContext, useState } from "react";
+import styled from "styled-components";
 import { UsersContext } from "../contexts/UsersContext";
+
+const Container = styled.div`
+  margin: 2em auto;
+  padding: 1em;
+  width: 80%;
+  max-width: 600px;
+`;
+
+const Button = styled.button`
+  background-color: ${(props) => props.theme.colors.primary};
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  margin: 0.5em;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.secondary};
+  }
+`;
 
 const Users = () => {
   const { users, addUser, updateUser, deleteUser } = useContext(UsersContext);
@@ -33,7 +55,7 @@ const Users = () => {
   };
 
   return (
-    <div>
+    <Container>
       <h2>Manage Users</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -52,18 +74,18 @@ const Users = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <button type="submit">{editing ? "Update User" : "Add User"}</button>
+        <Button type="submit">{editing ? "Update User" : "Add User"}</Button>
       </form>
       <ul>
         {users.map((user) => (
           <li key={user.id}>
             {user.name} ({user.email})
-            <button onClick={() => handleEdit(user)}>Edit</button>
-            <button onClick={() => handleDelete(user.id)}>Delete</button>
+            <Button onClick={() => handleEdit(user)}>Edit</Button>
+            <Button onClick={() => handleDelete(user.id)}>Delete</Button>
           </li>
         ))}
       </ul>
-    </div>
+    </Container>
   );
 };
 

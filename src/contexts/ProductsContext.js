@@ -20,10 +20,21 @@ export const ProductsProvider = ({ children }) => {
   }, []);
 
   const addProduct = async (product) => {
+    const formData = new FormData();
+    formData.append("name", product.name);
+    formData.append("price", product.price);
+    if (product.image) {
+      formData.append("image", product.image);
+    }
     try {
       const response = await axios.post(
         "http://localhost:5000/api/products",
-        product
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       setProducts([...products, response.data]);
     } catch (error) {
@@ -32,10 +43,23 @@ export const ProductsProvider = ({ children }) => {
   };
 
   const updateProduct = async (id, updatedProduct) => {
+    const formData = new FormData();
+    formData.append("name", updatedProduct.name);
+    formData.append("price", updatedProduct.price);
+    if (updatedProduct.image) {
+      formData.append("image", updatedProduct.image);
+    } else {
+      formData.append("imageUrl", updatedProduct.imageUrl);
+    }
     try {
       const response = await axios.put(
         `http://localhost:5000/api/products/${id}`,
-        updatedProduct
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       setProducts(
         products.map((product) => (product.id === id ? response.data : product))

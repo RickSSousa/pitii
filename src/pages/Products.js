@@ -1,25 +1,53 @@
 import React, { useContext, useState } from "react";
+import styled from "styled-components";
 import { ProductsContext } from "../contexts/ProductsContext";
+
+const Container = styled.div`
+  margin: 2em auto;
+  padding: 1em;
+  width: 80%;
+  max-width: 600px;
+`;
+
+const Button = styled.button`
+  background-color: ${(props) => props.theme.colors.primary};
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  margin: 0.5em;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.secondary};
+  }
+`;
 
 const Products = () => {
   const { products, addProduct, updateProduct, deleteProduct } =
     useContext(ProductsContext);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [image, setImage] = useState(null);
   const [editing, setEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const product = { name, price, image };
     if (editing) {
-      updateProduct(currentProduct.id, { name, price });
+      updateProduct(currentProduct.id, {
+        ...product,
+        imageUrl: currentProduct.imageUrl,
+      });
       setEditing(false);
       setCurrentProduct(null);
     } else {
-      addProduct({ name, price });
+      addProduct(product);
     }
     setName("");
     setPrice("");
+    setImage(null);
   };
 
   const handleEdit = (product) => {
@@ -27,6 +55,7 @@ const Products = () => {
     setCurrentProduct(product);
     setName(product.name);
     setPrice(product.price);
+    setImage(product.imageUrl);
   };
 
   const handleDelete = (id) => {
@@ -34,7 +63,7 @@ const Products = () => {
   };
 
   return (
-    <div>
+    <Container>
       <h2>Manage Products</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -53,20 +82,33 @@ const Products = () => {
             onChange={(e) => setPrice(e.target.value)}
           />
         </div>
-        <button type="submit">
+        <div>
+          <label>Image:</label>
+          <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+        </div>
+        <Button type="submit">
           {editing ? "Update Product" : "Add Product"}
-        </button>
+        </Button>
       </form>
       <ul>
         {products.map((product) => (
           <li key={product.id}>
-            {product.name} (${product.price})
-            <button onClick={() => handleEdit(product)}>Edit</button>
-            <button onClick={() => handleDelete(product.id)}>Delete</button>
+            <div>
+              <strong>{product.name}</strong> (${product.price})
+              {product.imageUrl && (
+                <img
+                  src={`http://localhost:5000${product.imageUrl}`}
+                  alt={product.name}
+                  width="100"
+                />
+              )}
+            </div>
+            <Button onClick={() => handleEdit(product)}>Edit</Button>
+            <Button onClick={() => handleDelete(product.id)}>Delete</Button>
           </li>
         ))}
       </ul>
-    </div>
+    </Container>
   );
 };
 
