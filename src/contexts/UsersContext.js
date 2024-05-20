@@ -5,6 +5,7 @@ export const UsersContext = createContext();
 
 export const UsersProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -53,7 +54,16 @@ export const UsersProvider = ({ children }) => {
   };
 
   return (
-    <UsersContext.Provider value={{ users, addUser, updateUser, deleteUser }}>
+    <UsersContext.Provider
+      value={{
+        users,
+        addUser,
+        updateUser,
+        deleteUser,
+        isAuthenticated,
+        setIsAuthenticated,
+      }}
+    >
       {children}
     </UsersContext.Provider>
   );

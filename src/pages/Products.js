@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { ProductsContext } from "../contexts/ProductsContext";
+import { UsersContext } from "../contexts/UsersContext";
 
 const Container = styled.div`
   margin: 2em auto;
@@ -26,6 +27,7 @@ const Button = styled.button`
 const Products = () => {
   const { products, addProduct, updateProduct, deleteProduct } =
     useContext(ProductsContext);
+  const { isAuthenticated } = useContext(UsersContext);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
@@ -62,34 +64,42 @@ const Products = () => {
     deleteProduct(id);
   };
 
+  console.log(products);
   return (
     <Container>
-      <h2>Manage Products</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Price:</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Image:</label>
-          <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-        </div>
-        <Button type="submit">
-          {editing ? "Update Product" : "Add Product"}
-        </Button>
-      </form>
+      {isAuthenticated && (
+        <>
+          <h2>Manage Products</h2>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label>Name:</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Price:</label>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Image:</label>
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+              />
+            </div>
+            <Button type="submit">
+              {editing ? "Update Product" : "Add Product"}
+            </Button>
+          </form>
+        </>
+      )}
       <ul>
         {products.map((product) => (
           <li key={product.id}>
@@ -97,14 +107,18 @@ const Products = () => {
               <strong>{product.name}</strong> (${product.price})
               {product.imageUrl && (
                 <img
-                  src={`http://localhost:5000${product.imageUrl}`}
+                  src={`http://localhost:5000/uploads/1716237235519-logo(1).png`}
                   alt={product.name}
                   width="100"
                 />
               )}
             </div>
-            <Button onClick={() => handleEdit(product)}>Edit</Button>
-            <Button onClick={() => handleDelete(product.id)}>Delete</Button>
+            {isAuthenticated && (
+              <>
+                <Button onClick={() => handleEdit(product)}>Edit</Button>
+                <Button onClick={() => handleDelete(product.id)}>Delete</Button>
+              </>
+            )}
           </li>
         ))}
       </ul>

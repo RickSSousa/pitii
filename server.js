@@ -6,6 +6,8 @@ const path = require("path");
 const fs = require("fs");
 const { Pool } = require("pg");
 const app = express();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const PORT = process.env.PORT || 5000;
 
 // Configurações do banco de dados
@@ -16,6 +18,10 @@ const pool = new Pool({
   password: "123",
   port: 5432,
 });
+
+// JWT Secret
+const JWT_SECRET =
+  "JwtjPn2oHPe2EYImTkx8BYFAtBmiIdIDaiMEdIuLGSoUpCVLkq+JuMJqOBhqvnElXLHo5MAHlRQVs+V++lw1YTvhBZIHtCleUwWwO3WA+T6nmmhjeZvfNfLWsn1jhvK7eQS57GAG9OkpUdJbCHEqJuhNa5kNOZpjGQbHHdtLN76eVBvriHpk8AL5CT+zrKGI50fe9EwdsqrTiK1/rkJsaKH5WKSS8/05di88wdBGvYGHxivB7Vbp0c0fcsYZ+cfpBOEbC8quw/JPA3YBTJ4WGmNozAetDbQJXyxMYhYeQQIm7vPjgt2jbvZbnOwMCGrVr23lXYZn4ZCjtc7jglvx0A==";
 
 // Verifica se o diretório 'uploads' existe, caso contrário, cria-o
 const uploadsDir = path.join(__dirname, "uploads");
@@ -37,6 +43,44 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+app.post("/api/register", async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await pool.query(
+      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
+      [name, email, hashedPassword]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to register user" });
+  }
+});
+
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    const user = result.rows[0];
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = jwt.sign(
+        { id: user.id, name: user.name, email: user.email },
+        JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+      res.json({ token });
+    } else {
+      res.status(401).json({ error: "Invalid email or password" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to login" });
+  }
+});
 
 // CRUD endpoints for users
 app.get("/api/users", async (req, res) => {

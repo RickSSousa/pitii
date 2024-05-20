@@ -1,7 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import logo from "../assets/logo.png"; // Certifique-se de que a nova logo está salva aqui
+import logo from "../assets/logo.png";
+import { UsersContext } from "../contexts/UsersContext";
 
 const Nav = styled.nav`
   background-color: ${(props) => props.theme.colors.primary};
@@ -50,7 +51,30 @@ const Li = styled.li`
   }
 `;
 
+const Button = styled.button`
+  background-color: ${(props) => props.theme.colors.primary};
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  margin: 0.5em;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.secondary};
+  }
+`;
+
 function Navbar() {
+  const { isAuthenticated, setIsAuthenticated } = useContext(UsersContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    navigate("/products");
+  };
+
   return (
     <Nav>
       <LogoContainer>
@@ -59,14 +83,30 @@ function Navbar() {
       </LogoContainer>
       <Ul>
         <Li>
-          <Link to="/">Home</Link>
-        </Li>
-        <Li>
-          <Link to="/users">Users</Link>
-        </Li>
-        <Li>
           <Link to="/products">Products</Link>
         </Li>
+        {isAuthenticated ? (
+          <Ul>
+            <Li>
+              <Link to="/">Home</Link>
+            </Li>
+            <Li>
+              <Link to="/users">Users</Link>
+            </Li>
+            <Li>
+              <Button onClick={handleLogout}>Logout</Button>
+            </Li>
+          </Ul>
+        ) : (
+          <Ul>
+            <Li>
+              <Link to="/register">Register</Link>
+            </Li>
+            <Li>
+              <Link to="/login">Login</Link>
+            </Li>
+          </Ul>
+        )}
       </Ul>
     </Nav>
   );
