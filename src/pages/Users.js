@@ -56,10 +56,10 @@ const Users = () => {
 
   return (
     <Container>
-      <h2>Manage Users</h2>
+      <h2>Gerenciador de usuários</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Name:</label>
+          <label>Nome:</label>
           <input
             type="text"
             value={name}
@@ -80,8 +80,8 @@ const Users = () => {
         {users.map((user) => (
           <li key={user.id}>
             {user.name} ({user.email})
-            <Button onClick={() => handleEdit(user)}>Edit</Button>
-            <Button onClick={() => handleDelete(user.id)}>Delete</Button>
+            <Button onClick={() => handleEdit(user)}>Editar</Button>
+            <Button onClick={() => handleDelete(user.id)}>Deletar</Button>
           </li>
         ))}
       </ul>

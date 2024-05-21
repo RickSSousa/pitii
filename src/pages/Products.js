@@ -7,7 +7,53 @@ const Container = styled.div`
   margin: 2em auto;
   padding: 1em;
   width: 80%;
-  max-width: 600px;
+  max-width: 1000px;
+
+  .product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+
+    .product-item {
+      flex: 1 1 calc(25% - 1em);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 1em 0;
+      padding: 1em;
+      background-color: #f8f8f8;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      img {
+        border-radius: 10%;
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+      }
+
+      .product-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-top: 0.5em;
+
+        strong {
+          margin-bottom: 0.5em;
+        }
+      }
+
+      .options {
+        display: flex;
+        gap: 1em;
+        margin-top: 0.5em;
+      }
+    }
+  }
 `;
 
 const Button = styled.button`
@@ -64,15 +110,14 @@ const Products = () => {
     deleteProduct(id);
   };
 
-  console.log(products);
   return (
     <Container>
       {isAuthenticated && (
         <>
-          <h2>Manage Products</h2>
+          <h2>Gerenciar Produtos</h2>
           <form onSubmit={handleSubmit}>
             <div>
-              <label>Name:</label>
+              <label>Nome:</label>
               <input
                 type="text"
                 value={name}
@@ -80,7 +125,7 @@ const Products = () => {
               />
             </div>
             <div>
-              <label>Price:</label>
+              <label>Preço:</label>
               <input
                 type="number"
                 value={price}
@@ -88,36 +133,37 @@ const Products = () => {
               />
             </div>
             <div>
-              <label>Image:</label>
+              <label>Imagem:</label>
               <input
                 type="file"
                 onChange={(e) => setImage(e.target.files[0])}
               />
             </div>
             <Button type="submit">
-              {editing ? "Update Product" : "Add Product"}
+              {editing ? "Atualizar Produto" : "Adicionar Produto"}
             </Button>
           </form>
         </>
       )}
-      <ul>
+      <h2>Cardápio</h2>
+      <ul className="product-list">
         {products.map((product) => (
-          <li key={product.id}>
-            <div>
-              <strong>{product.name}</strong> (${product.price})
-              {product.imageUrl && (
-                <img
-                  src={`http://localhost:5000/uploads/1716237235519-logo(1).png`}
-                  alt={product.name}
-                  width="100"
-                />
-              )}
+          <li key={product.id} className="product-item">
+            <img
+              src={`http://localhost:5000${product.image_url}`}
+              alt={product.name}
+            />
+            <div className="product-info">
+              <strong>{product.name}</strong>
+              <span>R${product.price}</span>
             </div>
             {isAuthenticated && (
-              <>
-                <Button onClick={() => handleEdit(product)}>Edit</Button>
-                <Button onClick={() => handleDelete(product.id)}>Delete</Button>
-              </>
+              <div className="options">
+                <Button onClick={() => handleEdit(product)}>Editar</Button>
+                <Button onClick={() => handleDelete(product.id)}>
+                  Deletar
+                </Button>
+              </div>
             )}
           </li>
         ))}

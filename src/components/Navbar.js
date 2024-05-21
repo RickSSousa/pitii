@@ -38,6 +38,7 @@ const Ul = styled.ul`
 
 const Li = styled.li`
   margin-left: 1em;
+  background-color: transparent;
 
   a {
     color: white;
@@ -48,20 +49,6 @@ const Li = styled.li`
     &:hover {
       color: ${(props) => props.theme.colors.secondary};
     }
-  }
-`;
-
-const Button = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  border: none;
-  padding: 0.5em 1em;
-  cursor: pointer;
-  margin: 0.5em;
-  border-radius: 5px;
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.secondary};
   }
 `;
 
@@ -83,25 +70,25 @@ function Navbar() {
       </LogoContainer>
       <Ul>
         <Li>
-          <Link to="/products">Products</Link>
+          <Link to="/products">Produtos</Link>
         </Li>
         {isAuthenticated ? (
           <Ul>
             <Li>
-              <Link to="/">Home</Link>
+              <Link to="/home">Home</Link>
             </Li>
             <Li>
-              <Link to="/users">Users</Link>
+              <Link to="/users">Usuários</Link>
             </Li>
             <Li>
-              <Button onClick={handleLogout}>Logout</Button>
+              <Link onClick={handleLogout}>Logout</Link>
             </Li>
           </Ul>
         ) : (
           <Ul>
-            <Li>
+            {/* <Li>
               <Link to="/register">Register</Link>
-            </Li>
+            </Li> */}
             <Li>
               <Link to="/login">Login</Link>
             </Li>

@@ -59,7 +59,7 @@ const Login = ({ onLogin }) => {
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label>Senha:</label>
           <input
             type="password"
             value={password}

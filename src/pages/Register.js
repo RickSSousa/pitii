@@ -49,10 +49,10 @@ const Register = () => {
 
   return (
     <Container>
-      <h2>Register</h2>
+      <h2>Registrar</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Name:</label>
+          <label>Nome:</label>
           <input
             type="text"
             value={name}
@@ -68,14 +68,14 @@ const Register = () => {
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label>Senha:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button type="submit">Register</Button>
+        <Button type="submit">Registrar</Button>
       </form>
     </Container>
   );

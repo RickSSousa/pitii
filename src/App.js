@@ -29,12 +29,12 @@ const App = () => {
       <Router>
         <Navbar />
         <Routes>
+          <Route path="/products" element={<Products />} />
           <Route path="/home" element={<Home />} />
           <Route
             path="/users"
             element={isAuthenticated ? <Users /> : <Navigate to="/login" />}
           />
-          <Route path="/products" element={<Products />} />
           <Route
             path="/login"
             element={
