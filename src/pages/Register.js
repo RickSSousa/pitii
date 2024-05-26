@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { UsersContext } from "../contexts/UsersContext";
 
 const Container = styled.div`
   max-width: 400px;
@@ -30,18 +31,22 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUsers } = useContext(UsersContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/register", {
-        name,
-        email,
-        password,
-      });
-      alert("User registered successfully");
-      navigate("/login");
+      await axios
+        .post("http://localhost:5000/api/register", {
+          name,
+          email,
+          password,
+        })
+        .then((id) => {
+          alert("User registered successfully");
+          setUsers((users) => [...users, { id, name, email, password }]);
+        });
     } catch (error) {
       console.error("Error registering user:", error);
     }

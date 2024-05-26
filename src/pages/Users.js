@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { UsersContext } from "../contexts/UsersContext";
+import { Link, useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   margin: 2em auto;
@@ -24,27 +25,22 @@ const Button = styled.button`
 `;
 
 const Users = () => {
-  const { users, addUser, updateUser, deleteUser } = useContext(UsersContext);
+  const { users, updateUser, deleteUser } = useContext(UsersContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [editing, setEditing] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (editing) {
-      updateUser(currentUser.id, { name, email });
-      setEditing(false);
-      setCurrentUser(null);
-    } else {
-      addUser({ name, email });
-    }
+    updateUser(currentUser.id, { name, email });
+    setCurrentUser(null);
+
     setName("");
     setEmail("");
   };
 
   const handleEdit = (user) => {
-    setEditing(true);
     setCurrentUser(user);
     setName(user.name);
     setEmail(user.email);
@@ -74,8 +70,10 @@ const Users = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <Button type="submit">{editing ? "Update User" : "Add User"}</Button>
+        <Button type="submit">Editar Usuário</Button>
       </form>
+      <Button onClick={() => navigate("/register")}>Adicionar Usuário</Button>
+
       <ul>
         {users.map((user) => (
           <li key={user.id}>

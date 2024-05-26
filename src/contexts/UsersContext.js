@@ -57,6 +57,7 @@ export const UsersProvider = ({ children }) => {
     <UsersContext.Provider
       value={{
         users,
+        setUsers,
         addUser,
         updateUser,
         deleteUser,
